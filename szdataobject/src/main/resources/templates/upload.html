@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+    <!--<script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <!--<script type="text/javascript" src="http://malsup.github.com/jquery.form.js"></script>-->
+    <!--<link rel="stylesheet" href="upload.css" type="text/css" >-->
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="jquery.form.js"></script>
+</head>
+
+<body>
+<div class="w1" style="background: #fcc;">
+    <span>申通导入</span>
+    <form method="post" action="/data/import" enctype="multipart/form-data" id="from1">
+        <input type="file" name="file">
+        <input type="submit" value="香港申通表格导入">
+    </form>
+
+    <span>汇总表导入</span>
+    <form method="post" action="/data/importCollect" enctype="multipart/form-data" id="from2">
+        <input type="file" name="file">
+        <input type="submit" value="汇总表确定">
+    </form>
+    <!--<span>Ebay价格表</span>-->
+    <!--<form method="post" action="/Price/EbayPrice" enctype="multipart/form-data">-->
+    <!--<input type="file" name="file">-->
+    <!--<input type="submit" value="Ebay价格表确定">-->
+    <!--</form>-->
+    <!--<span></span>-->
+    <!--<div>-->
+    <!--<button onclick="sum()">计算费用</button>-->
+    <!--</div>-->
+    <!--<span></span>-->
+    <!--<div><button onclick="importData()">导出</button></div>-->
+    <!--<iframe name="form" id="form" style="display:none"></iframe>-->
+</div>
+</body>
+<script>
+    $(function(){
+        $("#form1").bind("submit", function(){
+            var file=$("#file").val();
+            if(file == ""){
+                alert("请选择文件！！！");
+                return false;
+            }
+        });
+        console.log("----")
+        /** 验证文件是否导入成功  */
+        $("#from2").ajaxForm(function(data){
+            if(data.status =="success" && data.data== 1){
+                alert("提交成功！");
+            }else {
+                alert("提交失败！");
+            }
+        });
+
+        $("#from1").bind("submit", function(){
+            var file=$("#file").val();
+            if(file == ""){
+                alert("请选择文件！！！");
+                return false;
+            }
+        });
+        console.log("----")
+        /** 验证文件是否导入成功  */
+        $("#from1").ajaxForm(function(data){
+            if(data.status =="success" && data.data== 1){
+                alert("提交成功！");
+            }else {
+                alert("提交失败！");
+            }
+        });
+    });
+    function importData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "/Price/importData", true);
+        xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
+        xhr.onload = function () {
+            var data = xhr.response;
+            var blob = new Blob([data]);
+            var blobUrl = window.URL.createObjectURL(blob);
+            download(blobUrl) ;
+        }
+        xhr.send(); // 发送aja
+    }
+
+    function download(blobUrl) {
+        var a = document.createElement('a');
+        a.download = 'Ebay.xlsx';
+        a.href = blobUrl;
+        a.click();
+    }
+</script>
+</html>
